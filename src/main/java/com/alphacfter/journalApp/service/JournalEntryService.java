@@ -43,6 +43,14 @@ public class JournalEntryService {
         userService.saveEntry(userInDB);
     }
 
+    /**
+     * Overloaded method to handle various parameters {@link com.alphacfter.journalApp.controller.JournalEntryControllerV2#updateJournalByID(ObjectId, JournalEntry, String)}
+     * @param journalEntry returns the body of the JSON sent from frontend(Postman)
+     */
+    public void saveEntry(JournalEntry journalEntry){
+        journalEntryRepo.save(journalEntry);
+    }
+
     public List<JournalEntry> getAll(){
         return journalEntryRepo.findAll();
     }
@@ -51,7 +59,10 @@ public class JournalEntryService {
         return journalEntryRepo.findById(id);
     }
 
-    public void deleteEntryByID(ObjectId id){
+    public void deleteEntryByID(ObjectId id, String username){
+        User userInDB = userService.findByUsername(username);
+        userInDB.getJournalEntry().removeIf(x -> x.getId().equals(id));
+        userService.saveEntry(userInDB);
         journalEntryRepo.deleteById(id);
     }
 }

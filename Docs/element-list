@@ -1,0 +1,5 @@
+com.alphacfter.journalApp
+com.alphacfter.journalApp.controller
+com.alphacfter.journalApp.entity
+com.alphacfter.journalApp.repository
+com.alphacfter.journalApp.service
