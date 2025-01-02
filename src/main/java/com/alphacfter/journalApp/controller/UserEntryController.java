@@ -1,7 +1,7 @@
 package com.alphacfter.journalApp.controller;
 
 import com.alphacfter.journalApp.entity.User;
-import com.alphacfter.journalApp.service.UserEntryService;
+import com.alphacfter.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 public class UserEntryController {
 
     @Autowired
-    private UserEntryService userService;
+    private UserService userService;
 
     @GetMapping
     public List<User> getAllUsers(){
