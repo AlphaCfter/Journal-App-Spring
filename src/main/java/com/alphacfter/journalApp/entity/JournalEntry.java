@@ -1,5 +1,7 @@
 package com.alphacfter.journalApp.entity;
 
+import lombok.Data;
+import lombok.Setter;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -9,6 +11,7 @@ import java.util.Date;
 
 //The document annotation is used to map POJO with Database(MongoDB)
 @Document(collection = "journal_entries")
+@Data // Annotation used my Lombok to generate @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
 public class JournalEntry {
 
     @Id
@@ -17,39 +20,5 @@ public class JournalEntry {
     private String content;
     private LocalDateTime date;
 
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
-
-    public ObjectId getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-
 }
+
