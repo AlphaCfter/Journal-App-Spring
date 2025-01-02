@@ -2,8 +2,11 @@ package com.alphacfter.journalApp.controller;
 
 import com.alphacfter.journalApp.entity.JournalEntry;
 import com.alphacfter.journalApp.service.JournalEntryService;
+import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,8 +26,12 @@ public class JournalEntryControllerV2 {
     //Methods in controllers should be declared public so that the framework could
     //access it via the end point
     @GetMapping
-    public List<JournalEntry> getall(){  //localhost:8080/journal
-            return journalEntryService.getAll();
+    public ResponseEntity<?> getall(){  //localhost:8080/journal
+        List<JournalEntry> all = journalEntryService.getAll();
+        if(all != null && !all.isEmpty()){
+            return new ResponseEntity<>(all,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(all,HttpStatus.NOT_FOUND);
     }
 
 
@@ -39,10 +46,15 @@ public class JournalEntryControllerV2 {
      * @return returns a Boolean statement of weather a record has been created
      */
     @PostMapping
-    public JournalEntry createEntry(@RequestBody JournalEntry myEntry){  //localhost:8080/journal
-        myEntry.setDate(LocalDateTime.now());
-        journalEntryService.saveEntry(myEntry);
-        return myEntry;
+    public ResponseEntity<JournalEntry> createEntry(@RequestBody JournalEntry myEntry){  //localhost:8080/journal
+        try{
+            myEntry.setDate(LocalDateTime.now());
+            journalEntryService.saveEntry(myEntry);
+            return new ResponseEntity<>(myEntry,HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     //Any URL preceding with a ? indicates that a query parameter(Request Param)
@@ -51,31 +63,45 @@ public class JournalEntryControllerV2 {
      * Example : localhost:8080/journal/id/2
      *
      * @param myID Returns the ID of the record in the DB(function) in this case
-     * @return Returns the journal entry by ID back to the call function
+     * @return Returns the response code along with the journal entry
      */
     @GetMapping("id/{myID}")
-    public JournalEntry getJournalByID(@PathVariable ObjectId myID){
+    public ResponseEntity<?> getJournalByID(@PathVariable ObjectId myID){
 
-        return journalEntryService.findEntryByID(myID).orElse(null);
+        Optional<JournalEntry> journalEntry = journalEntryService.findEntryByID(myID);
+        if(journalEntry.isPresent()){
+            return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     /**Example : localhost:8080/journal/id/2
      * @param myID deletes the ID of the record in the DB(function) in this case
-     * @return Returns the journal entry by ID back to the call function
+     * @return Returns the status code of the current executing API
+     * ResponseEntity<> where ? acts as a wildcard where any class can be returned in place of fixed class
      */
     @DeleteMapping("id/{myID}")
-    public JournalEntry deleteJournalByID(@PathVariable ObjectId myID){
-
-       return null;
+    public ResponseEntity<?> deleteJournalByID(@PathVariable ObjectId myID){
+        journalEntryService.deleteEntryByID(myID);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**Example : localhost:8080/journal/id/2
      * @param myID updates the ID of the record in the DB(function) in this case
      * @param entry updates the ID of a gives record with a given JSON body
      * @return Returns the journal entry by ID back to the call function
+     * returns only if the title is not null or the title contains empty string
      */
     @PutMapping("id/{myID}")
-    public JournalEntry deleteJournalByID(@PathVariable ObjectId myID, @RequestBody JournalEntry entry){
-        return null;
+    public ResponseEntity<?> updateJournalByID(@PathVariable ObjectId myID, @RequestBody JournalEntry entry){
+
+        JournalEntry old = journalEntryService.findEntryByID(myID).orElse(null);
+        if(old != null) {
+            old.setTitle(entry.getTitle() != null && entry.getTitle().equals("") ? entry.getTitle() : old.getTitle());
+            old.setContent(entry.getContent() != null && entry.getTitle().equals("") ? entry.getContent() : old.getContent());
+            journalEntryService.saveEntry(old);
+            return new ResponseEntity<>(old,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

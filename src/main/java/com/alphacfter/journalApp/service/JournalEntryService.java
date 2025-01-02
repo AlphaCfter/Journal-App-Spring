@@ -30,4 +30,8 @@ public class JournalEntryService {
     public Optional<JournalEntry> findEntryByID(ObjectId id){
         return journalEntryRepo.findById(id);
     }
+
+    public void deleteEntryByID(ObjectId id){
+        journalEntryRepo.deleteById(id);
+    }
 }
