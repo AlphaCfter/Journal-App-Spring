@@ -1,3 +1,12 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+#application.properties
+application.properties
+
+#log files
+*.log
+
+#OS files
+.DS_Store
+Thumbs.db
