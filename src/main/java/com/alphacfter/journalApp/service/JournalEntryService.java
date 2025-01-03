@@ -6,6 +6,7 @@ import com.alphacfter.journalApp.repository.JournalRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,23 +26,41 @@ public class JournalEntryService {
     private UserService userService;
 
     /**
-     * First the username is determined from the database {@code User userInDB}
-     * Second, local time is fetched from the computer or the operating system and pastes in to the setDate field
-     * Third, the data is saved into the journal repository itself {@code JournalEntry saved}
-     * Since there is a list in the user class {@link User#getJournalEntry()}, we could use {@code add}
-     * and a part of reference is shared into the array list
-     * Lastly the method is registered into the user database using the {@link UserService#saveEntry(User)}
-     * @param journalEntry returns the body of the JSON sent from frontend(Postman)
-     * @param username returns a String type username from the URL where it dumps the records in the specific username
+     * Saves a journal entry for a specific user into the database.
      *
+     * <ol>
+     *   <li>First, the username is determined from the database using {@code User userInDB}.</li>
+     *   <li>Second, the local time is fetched from the computer or operating system
+     *       and set into the {@code setDate} field of the journal entry.</li>
+     *   <li>Third, the data is saved into the journal repository using {@code JournalEntry saved}.</li>
+     *   <li>Since there is a list in the {@code User} class {@link User#getJournalEntry()},
+     *       the journal entry is added, and a reference is shared in the user's journal list.</li>
+     *   <li>Lastly, the method registers the updated user into the database using
+     *       {@link UserService#saveEntry(User)}.</li>
+     * </ol>
+     *
+     * This method is transactional, meaning it ensures atomicity for the entire operation.
+     * To enable transactional support, ensure the main class has the annotation
+     * {@code @EnableTransactionalManagement}, such as in
+     * {@link com.alphacfter.journalApp.JournalApplication}.
+     *
+     * @param journalEntry the body of the JSON sent from the frontend (e.g., Postman).
+     * @param username     the username retrieved from the URL, which is used to associate
+     *                     the journal entry with the specific user.
      */
-    public void saveEntry(JournalEntry journalEntry, String username){
-        User userInDB = userService.findByUsername(username);
-        journalEntry.setDate(LocalDateTime.now());
-        JournalEntry saved = journalEntryRepo.save(journalEntry);
-        userInDB.getJournalEntry().add(saved);
-        userService.saveEntry(userInDB);
+    @Transactional
+    public void saveEntry(JournalEntry journalEntry, String username) {
+        try{
+            User userInDB = userService.findByUsername(username);
+            journalEntry.setDate(LocalDateTime.now());
+            JournalEntry saved = journalEntryRepo.save(journalEntry);
+            userInDB.setUsername(null);
+            userService.saveEntry(userInDB);
+        }catch (Exception e){
+            throw new RuntimeException("Error has occurred" + e);
+        }
     }
+
 
     /**
      * Overloaded method to handle various parameters {@link com.alphacfter.journalApp.controller.JournalEntryControllerV2#updateJournalByID(ObjectId, JournalEntry, String)}
