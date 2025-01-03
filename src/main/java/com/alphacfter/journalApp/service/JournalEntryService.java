@@ -54,7 +54,7 @@ public class JournalEntryService {
             User userInDB = userService.findByUsername(username);
             journalEntry.setDate(LocalDateTime.now());
             JournalEntry saved = journalEntryRepo.save(journalEntry);
-            userInDB.setUsername(null);
+            userInDB.getJournalEntry().add(saved);
             userService.saveEntry(userInDB);
         }catch (Exception e){
             throw new RuntimeException("Error has occurred" + e);
