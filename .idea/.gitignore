@@ -1,8 +1,6 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-#application.properties
-application.properties
 
 #log files
 *.log

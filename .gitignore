@@ -1,7 +1,5 @@
 # Project exclude paths
 /target/
-#application.properties
-application.properties
 
 #log files
 *.log
@@ -9,5 +7,5 @@ application.properties
 #OS files
 .DS_Store
 Thumbs.db
-!/src/main/resources/application.properties
 
+/src/main/resources/application.properties
