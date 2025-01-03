@@ -1,2 +1,11 @@
 # Project exclude paths
 /target/
+#application.properties
+application.properties
+
+#log files
+*.log
+
+#OS files
+.DS_Store
+Thumbs.db
