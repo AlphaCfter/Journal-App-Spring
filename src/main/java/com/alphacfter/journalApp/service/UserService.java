@@ -13,21 +13,29 @@ import java.util.List;
 @Component
 public class UserService {
 
-    /**
-     * Autowired repo makes the particular body as a dependency injection
-     */
+    
     @Autowired
     private UserRepository userRepository;
 
     private static final PasswordEncoder encodePassword = new BCryptPasswordEncoder();
 
-    public void saveEntry(User user){
+    /**
+     * Encodes the user's password and saves the new user to the database.
+     *
+     * This method uses {@link BCryptPasswordEncoder} to securely encode the user's password before saving.<br>
+     * <p>
+     * Related Methods:<ol>
+     * <li>{@link com.alphacfter.journalApp.controller.UserEntryController#updateUser(User)}: Updates existing user credentials.</li>
+     * <li>{@link com.alphacfter.journalApp.controller.PublicController#createNewUser(User)}: Creates new users upon request.</li></ol>
+     * @param user the user object containing the credentials to be encrypted and saved
+     */
+    public void saveNewUser(User user){
         user.setPassword(encodePassword.encode(user.getPassword()));
         user.setRoles(List.of("USER"));
         userRepository.save(user);
     }
 
-    public void saveNewUser(User user){
+    public void saveUser(User user){
         userRepository.save(user);
     }
 

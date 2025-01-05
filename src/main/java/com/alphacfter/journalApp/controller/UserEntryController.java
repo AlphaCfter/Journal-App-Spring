@@ -30,8 +30,13 @@ public class UserEntryController {
     }
 
     /**
-     * updateUser generates or changes a username and password if required
-     * @param user user field input by an API frontend (Postman)
+     * Updates the currently authenticated user and all their associated data.
+     *
+     * Example: PUT request to `localhost:8080/user`
+     *
+     * @return a ResponseEntity containing:
+     *         - HTTP status 204 (NO CONTENT) if the user is successfully updated.
+     *
      */
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User user){
@@ -40,10 +45,19 @@ public class UserEntryController {
         User userInDB = userService.findByUsername(username);
         userInDB.setUsername(user.getUsername());
         userInDB.setPassword(user.getPassword());
-        userService.saveEntry(userInDB);
+        userService.saveNewUser(userInDB);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Deletes the currently authenticated user and all their associated data.
+     *
+     * Example: DELETE request to `localhost:8080/user`
+     *
+     * @return a ResponseEntity containing:
+     *         - HTTP status 204 (NO CONTENT) if the user is successfully deleted.
+     *
+     */
     @DeleteMapping
     public ResponseEntity<?> deleteUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -1,5 +1,6 @@
 package com.alphacfter.journalApp.service;
 
+import com.alphacfter.journalApp.controller.JournalEntryController;
 import com.alphacfter.journalApp.entity.JournalEntry;
 import com.alphacfter.journalApp.entity.User;
 import com.alphacfter.journalApp.repository.JournalRepository;
@@ -36,7 +37,7 @@ public class JournalEntryService {
      *   <li>Since there is a list in the {@code User} class {@link User#getJournalEntry()},
      *       the journal entry is added, and a reference is shared in the user's journal list.</li>
      *   <li>Lastly, the method registers the updated user into the database using
-     *       {@link UserService#saveEntry(User)}.</li>
+     *       {@link UserService#saveNewUser(User)}.</li>
      * </ol>
      *
      * This method is transactional, meaning it ensures atomicity for the entire operation.
@@ -55,7 +56,7 @@ public class JournalEntryService {
             journalEntry.setDate(LocalDateTime.now());
             JournalEntry saved = journalEntryRepo.save(journalEntry);
             userInDB.getJournalEntry().add(saved);
-            userService.saveEntry(userInDB);
+            userService.saveUser(userInDB);
         }catch (Exception e){
             throw new RuntimeException("Error has occurred" + e);
         }
@@ -63,7 +64,7 @@ public class JournalEntryService {
 
 
     /**
-     * Overloaded method to handle various parameters {@link com.alphacfter.journalApp.controller.JournalEntryControllerV2#updateJournalByID(ObjectId, JournalEntry, String)}
+     * Overloaded method to handle various parameters {@link JournalEntryController#updateJournalByID(ObjectId, JournalEntry, String)}
      * @param journalEntry returns the body of the JSON sent from frontend(Postman)
      */
     public void saveEntry(JournalEntry journalEntry){
@@ -78,10 +79,19 @@ public class JournalEntryService {
         return journalEntryRepo.findById(id);
     }
 
-    public void deleteEntryByID(ObjectId id, String username){
-        User userInDB = userService.findByUsername(username);
-        userInDB.getJournalEntry().removeIf(x -> x.getId().equals(id));
-        userService.saveEntry(userInDB);
-        journalEntryRepo.deleteById(id);
+    @Transactional
+    public boolean deleteEntryByID(ObjectId id, String username){
+        boolean isRemoved = false;
+        try {
+            User userInDB = userService.findByUsername(username);
+            isRemoved = userInDB.getJournalEntry().removeIf(x -> x.getId().equals(id));
+            if(isRemoved){
+                userService.saveUser(userInDB);
+                journalEntryRepo.deleteById(id);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error Deleting entry"+e.getMessage());
+        }
+        return isRemoved;
     }
 }
