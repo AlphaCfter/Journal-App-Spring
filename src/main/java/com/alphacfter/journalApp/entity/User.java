@@ -1,5 +1,6 @@
 package com.alphacfter.journalApp.entity;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
@@ -14,6 +15,7 @@ import java.util.List;
 //The document annotation is used to map POJO with Database(MongoDB)
 @Document(collection = "users")
 @Data // Annotation used my Lombok to generate @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
+@Builder
 public class User {
 
     @Id

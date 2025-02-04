@@ -29,10 +29,16 @@ public class UserService {
      * <li>{@link com.alphacfter.journalApp.controller.PublicController#createNewUser(User)}: Creates new users upon request.</li></ol>
      * @param user the user object containing the credentials to be encrypted and saved
      */
-    public void saveNewUser(User user){
-        user.setPassword(encodePassword.encode(user.getPassword()));
-        user.setRoles(List.of("USER"));
-        userRepository.save(user);
+    public boolean saveNewUser(User user){
+        try{
+            user.setPassword(encodePassword.encode(user.getPassword()));
+            user.setRoles(List.of("USER"));
+            userRepository.save(user);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
     }
 
     public void saveAdmin(User user) {
