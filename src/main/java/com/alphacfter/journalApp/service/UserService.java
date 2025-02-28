@@ -2,7 +2,10 @@ package com.alphacfter.journalApp.service;
 
 import com.alphacfter.journalApp.entity.User;
 import com.alphacfter.journalApp.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +14,7 @@ import java.util.List;
 
 //controller --calls--> services --calls--> repository
 @Component
+@Slf4j
 public class UserService {
 
     
@@ -36,6 +40,7 @@ public class UserService {
             userRepository.save(user);
             return true;
         }catch (Exception e){
+            log.error("Invalid username for {}: ",user.getUsername(),e);
             return false;
         }
 

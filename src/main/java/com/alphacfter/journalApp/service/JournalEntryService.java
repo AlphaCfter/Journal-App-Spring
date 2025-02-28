@@ -5,6 +5,8 @@ import com.alphacfter.journalApp.entity.JournalEntry;
 import com.alphacfter.journalApp.entity.User;
 import com.alphacfter.journalApp.repository.JournalRepository;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,7 +66,7 @@ public class JournalEntryService {
 
 
     /**
-     * Overloaded method to handle various parameters {@link JournalEntryController#updateJournalByID(ObjectId, JournalEntry, String)}
+     * Overloaded method to handle various parameters {@link JournalEntryController updateJournalByID(ObjectId, JournalEntry, String)}
      * @param journalEntry returns the body of the JSON sent from frontend(Postman)
      */
     public void saveEntry(JournalEntry journalEntry){

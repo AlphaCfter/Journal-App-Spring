@@ -13,3 +13,16 @@ src/main/resources/application.properties
 **/application.properties
 
 *.properties
+*.yaml
+*.yml
+
+!/src/main/resources/application.yaml
+!/src/main/resources/application-dev.yaml
+
+/src/main/resources/application.yaml
+src/main/resources/application.yaml
+**/application.yaml
+**/application-dev.yaml
+
+/src/main/resources/application-dev.yaml
+src/main/resources/application-dev.yaml
