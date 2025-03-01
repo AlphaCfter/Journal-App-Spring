@@ -14,6 +14,8 @@ Thumbs.db
 *.properties
 *.yaml
 *.yml
+/.idea/compiler.xml
+/.idea/misc.xml
 
 !/src/main/resources/application.yaml
 !/src/main/resources/application-dev.yaml
