@@ -1,8 +1,10 @@
 package com.alphacfter.journalApp.controller;
 
+import com.alphacfter.journalApp.api.response.WeatherResponse;
 import com.alphacfter.journalApp.entity.User;
 import com.alphacfter.journalApp.repository.UserRepository;
 import com.alphacfter.journalApp.service.UserService;
+import com.alphacfter.journalApp.service.WeatherAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,10 @@ public class UserEntryController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping
+    @Autowired
+    private WeatherAPI weatherAPI;
+
+    @GetMapping("/getall")
     public List<User> getAllUsers(){
         return userService.getAllUsers();
     }
@@ -65,5 +70,25 @@ public class UserEntryController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    /**
+     * Handles HTTP GET requests and returns a greeting message along with the current weather
+     *
+     * This method retrieves the authenticated user's name from the security context and fetches
+     * the weather data for Bangalore using the {@code weatherAPI} service. If the weather API
+     * response is available, it includes the "feels like" temperature in the greeting.
+     *
+     * @return a {@link ResponseEntity} containing a personalized greeting message with the weather details
+     *         (if available), along with an HTTP 200 OK status.
+     */
+    @GetMapping
+    public ResponseEntity<?> greeting(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        WeatherResponse response = weatherAPI.getWeather("Bangalore");
+        String greeting = "";
+        if(weatherAPI != null){
+            greeting = ", todays weather feels like " + response.getCurrent().getFeelslike();
+        }
+        return new ResponseEntity<>("Hey " + authentication.getName()+greeting,HttpStatus.OK);
+    }
 
 }

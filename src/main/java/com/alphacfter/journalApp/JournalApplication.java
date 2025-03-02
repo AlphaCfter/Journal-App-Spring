@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableTransactionManagement
@@ -31,4 +32,19 @@ public class JournalApplication {
 		return new MongoTransactionManager(dbfactory);
 	}
 
+	/**
+	 * Solves: Field restTemplate in com.alphacfter.journalApp.service.WeatherAPI
+	 * required a bean of type 'org.springframework.web.client.RestTemplate' that could not be found.
+	 *
+	 * All these methods written in @Bean are written purposefully to instantiate an
+	 * instance of the RestTemplate. The method signatures have no significant values
+	 * because the other way they would return an instance of RestTemplate
+	 *
+	 * @see com.alphacfter.journalApp.controller.UserEntryController
+	 * @return an instance of RestTemplate which is required during component scanning
+	 */
+	@Bean
+	public RestTemplate temp(){
+		return new RestTemplate();
+	}
 }
