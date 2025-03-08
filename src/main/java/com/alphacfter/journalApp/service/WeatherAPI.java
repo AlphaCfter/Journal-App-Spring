@@ -1,11 +1,12 @@
 package com.alphacfter.journalApp.service;
 
 import com.alphacfter.journalApp.api.response.WeatherResponse;
+import com.alphacfter.journalApp.cache.AppCache;
+import com.alphacfter.journalApp.constants.Placeholders;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,10 +32,11 @@ public class WeatherAPI {
      * URL template for constructing the WeatherStack API request.
      * The placeholders are replaced dynamically in the request.
      */
-    private static final String URL_TEMPLATE = "http://api.weatherstack.com/current?access_key=%s&query=%s";
-
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private AppCache appCache;
 
     /**
      * Fetches the current weather for a specified city.
@@ -47,8 +49,13 @@ public class WeatherAPI {
      * @return a {@link WeatherResponse} object containing weather details for the specified city
      */
     public WeatherResponse getWeather(String city) {
-        String url = String.format(URL_TEMPLATE, API, city);
+        String template = AppCache.cache.get(AppCache.keys.WEATHER_API.toString());
+        // Replacing placeholders <apiKey> and <city> in the template
+        String url = template.replace(Placeholders.API_KEY, API).replace(Placeholders.CITY, city);
         ResponseEntity<WeatherResponse> response = restTemplate.exchange(url, HttpMethod.GET, null, WeatherResponse.class);
         return response.getBody();
     }
+
+
+
 }
