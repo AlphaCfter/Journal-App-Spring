@@ -1,0 +1,19 @@
+weather:
+  api:
+    key: ${WeatherKey}
+
+spring:
+  profiles:
+    active: default
+  data:
+    mongodb:
+      uri: ${DBURI}
+      database: ${DbName}
+      auto-index-creation: true
+
+server:
+    port: 8080
+    servlet:
+      context-path: /journal
+
+

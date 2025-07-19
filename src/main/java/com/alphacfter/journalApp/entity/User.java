@@ -1,8 +1,6 @@
 package com.alphacfter.journalApp.entity;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -16,6 +14,8 @@ import java.util.List;
 @Document(collection = "users")
 @Data // Annotation used my Lombok to generate @Getter @Setter @RequiredArgsConstructor @ToString @EqualsAndHashCode
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -24,6 +24,9 @@ public class User {
     @Indexed(unique = true)   //only allows unique records
     @NonNull
     private String username;
+    private String email;
+    private boolean sentimentAnalysis;
+
     @NonNull
     private String password;
     @DBRef
