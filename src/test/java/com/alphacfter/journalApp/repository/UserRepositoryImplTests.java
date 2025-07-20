@@ -1,5 +1,6 @@
 package com.alphacfter.journalApp.repository;
 
+import com.mongodb.assertions.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +13,7 @@ public class UserRepositoryImplTests {
 
     @Test
     public void testSaveUserName(){
-        userRepository.getUsersForSentimentAnalysis();
+        Assertions.assertNotNull(userRepository.getUsersForSentimentAnalysis());
     }
 
 }
