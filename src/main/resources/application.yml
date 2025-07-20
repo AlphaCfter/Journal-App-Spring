@@ -10,7 +10,17 @@ spring:
       uri: ${DBURI}
       database: ${DbName}
       auto-index-creation: true
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${uName}
+    password: ${uPasswd}
+    properties:
+        mail:
+          smtp:
+            auth: true
+          starttls:
+            enable: true
 server:
     port: 8080
     servlet:
