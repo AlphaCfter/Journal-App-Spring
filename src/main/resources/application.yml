@@ -16,14 +16,13 @@ spring:
     username: ${uName}
     password: ${uPasswd}
     properties:
-        mail:
-          smtp:
-            auth: true
+      mail:
+        smtp:
+          auth: true
           starttls:
-            enable: true
+           enable: true
 server:
-    port: 8080
-    servlet:
-      context-path: /journal
-
+  port: 8080
+  servlet:
+    context-path: /journal
 
